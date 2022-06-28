@@ -1,3 +1,4 @@
+domain: github.com/csfreak
 layout:
 - go.kubebuilder.io/v3
 plugins:

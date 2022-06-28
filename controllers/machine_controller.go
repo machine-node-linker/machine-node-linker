@@ -41,7 +41,7 @@ type MachineReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=machine.openshift.io,resources=machines,verbs=get;list;watch;update;patch;delete
+//+kubebuilder:rbac:groups=machine.openshift.io,resources=machines,verbs=get;list;watch;update;patch
 //+kubebuilder:rbac:groups=machine.openshift.io,resources=machines/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=machine.openshift.io,resources=machines/finalizers,verbs=update
 func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
