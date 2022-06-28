@@ -1,0 +1,24 @@
+domain: my.domain
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: machine-csr-noop
+repo: github.com/csfreak/machine-csr-noop
+resources:
+- controller: true
+  domain: my.domain
+  group: machine.openshift.io
+  kind: Machine
+  version: v1beta1
+- controller: true
+  domain: my.domain
+  group: certificates.k8s.io
+  kind: CertificateSigningRequest
+  version: v1
+- controller: true
+  domain: my.domain
+  kind: Node
+  version: v1
+version: "3"
