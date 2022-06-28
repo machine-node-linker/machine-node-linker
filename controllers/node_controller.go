@@ -37,9 +37,9 @@ type NodeReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=my.domain,resources=nodes,verbs=get;list;watch
-//+kubebuilder:rbac:groups=my.domain,resources=nodes/status,verbs=get
-//+kubebuilder:rbac:groups=my.domain,resources=nodes/finalizers,verbs=update
+//+kubebuilder:rbac:groups=,resources=nodes,verbs=get;list;watch
+//+kubebuilder:rbac:groups=,resources=nodes/status,verbs=get
+//+kubebuilder:rbac:groups=,resources=nodes/finalizers,verbs=update
 func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 	logger.Info("Started Node Reconciler")

@@ -1,4 +1,4 @@
-domain: my.domain
+domain: github.com/csfreak
 layout:
 - go.kubebuilder.io/v3
 plugins:
@@ -8,17 +8,11 @@ projectName: machine-csr-noop
 repo: github.com/csfreak/machine-csr-noop
 resources:
 - controller: true
-  domain: my.domain
-  group: machine.openshift.io
+  domain: openshift.io
+  group: machine
   kind: Machine
   version: v1beta1
 - controller: true
-  domain: my.domain
-  group: certificates.k8s.io
-  kind: CertificateSigningRequest
-  version: v1
-- controller: true
-  domain: my.domain
   kind: Node
   version: v1
 version: "3"
