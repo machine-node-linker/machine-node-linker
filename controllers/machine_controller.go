@@ -104,7 +104,7 @@ func (r *MachineReconciler) AddStatusAddresses(m *machinev1.Machine) error {
 	// Set Internal IP Address Type
 	a = append(a,
 		corev1.NodeAddress{
-			Type:    corev1.NodeInternalDNS,
+			Type:    corev1.NodeInternalIP,
 			Address: strings.Join(strings.Split(machineName, "-")[1:], "."),
 		},
 	)
