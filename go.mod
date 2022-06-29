@@ -9,8 +9,8 @@ require (
 	k8s.io/api v0.24.2
 	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.2
-	k8s.io/kubectl v0.23.5
-	sigs.k8s.io/controller-runtime v0.12.2
+	k8s.io/kubectl v0.24.2
+	sigs.k8s.io/controller-runtime v0.12.1
 )
 
 require (
