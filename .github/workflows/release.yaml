@@ -1,0 +1,48 @@
+
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    
+jobs:
+  Release:
+    name: Creates Tag and Release Artifacts and Upload to Quay
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 5
+          
+      - name: Get Semantic Version
+        id: v
+        uses: PaulHatch/semantic-version@v4.0.3
+        with:
+          short_tags: false
+
+      - name: Tag Release
+        uses: tvdias/github-tagger@v0.0.1
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          tag: "${{ steps.v.outputs.version_tag }}"
+        
+      - name: Log in to Quay.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ secrets.QUAY_USER }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+          registry: quay.io
+      
+      - name: Build and Deploy
+        env:
+          VERSION: "${{ steps.v.outputs.version_tag }}"
+        run: |
+          make generate
+          make podman-build
+          make podman-push
+          make bundle
+          make bundle-build
+          make bundle-push
+          make catalog-build
+          make catalog-push
