@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 5
+          fetch-depth: 0
           
       - name: Get Semantic Version
         id: v
@@ -27,6 +27,7 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           tag: "${{ steps.v.outputs.version_tag }}"
+        continue-on-error: true
         
       - name: Log in to Quay.io
         uses: redhat-actions/podman-login@v1
