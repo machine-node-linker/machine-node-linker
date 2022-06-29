@@ -38,7 +38,7 @@ jobs:
       
       - name: Build and Deploy
         env:
-          VERSION: "${{ steps.v.outputs.version_tag }}"
+          VERSION: "${{ steps.v.outputs.version }}"
         run: |
           make generate
           make podman-build
