@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: machine-csr-noop-subscription
+  namespace: machine-csr-noop
+  labels:
+    operators.coreos.com/machine-csr-noop.machine-csr.noop: ''
+spec:
+  installPlanApproval: Automatic
+  channel: alpha
+  name: machine-csr-noop
+  source: machine-csr-noop-catalog
+  sourceNamespace: machine-csr-noop
