@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"reflect"
 	"strings"
 	"time"
 
@@ -60,13 +61,15 @@ func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 
 	if len(m.Status.Addresses) == 0 && m.Spec.ProviderID == nil {
-		logger.Info("Adding Addresses to Machine Status", "Status", "m.Status")
-		if err := r.AddStatusAddresses(m); err != nil {
+		if a, err := r.AddStatusAddresses(m.GetName()); err != nil {
 			return ctrl.Result{}, nil
+		} else if !(reflect.DeepEqual(a, m.Status.Addresses)) {
+			logger.Info("Adding Addresses to Machine Status", "Status", "m.Status")
+			m.Status.Addresses = a
+			logger.Info("New Status", "Status", m.Status)
+			r.Client.Status().Update(ctx, m)
+			return ctrl.Result{Requeue: true, RequeueAfter: requeueAfter}, nil
 		}
-		logger.Info("New Status", "Status", m.Status)
-		r.Client.Status().Update(ctx, m)
-		return ctrl.Result{Requeue: true, RequeueAfter: requeueAfter}, nil
 	}
 	return ctrl.Result{}, nil
 }
@@ -78,9 +81,8 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *MachineReconciler) AddStatusAddresses(m *machinev1.Machine) error {
+func (r *MachineReconciler) AddStatusAddresses(machineName string) ([]corev1.NodeAddress, error) {
 	var a []corev1.NodeAddress
-	machineName := m.GetName()
 	// Set Hostname Address Type
 	a = append(a,
 		corev1.NodeAddress{
@@ -108,6 +110,5 @@ func (r *MachineReconciler) AddStatusAddresses(m *machinev1.Machine) error {
 			Address: strings.Join(strings.Split(machineName, "-")[1:], "."),
 		},
 	)
-	m.Status.Addresses = a
-	return nil
+	return a, nil
 }

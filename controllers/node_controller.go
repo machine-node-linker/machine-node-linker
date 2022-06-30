@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"reflect"
 
 	machinev1 "github.com/openshift/api/machine/v1beta1"
 	corev1 "k8s.io/api/core/v1"
@@ -71,17 +72,15 @@ func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 	}
 
 	if m.GetName() == nodeName {
-		logger.Info("Found Matching Machine", "Machine", m)
-		nref, err := reference.GetReference(scheme.Scheme, n)
-		if err != nil {
+		if nref, err := reference.GetReference(scheme.Scheme, n); err != nil {
 			return ctrl.Result{}, err
+		} else if !reflect.DeepEqual(nref, m.Status.NodeRef) {
+			m.Status.NodeRef = nref
+			logger.Info("Updated Machine Status", "Status", m.Status)
+			r.Client.Status().Update(ctx, m)
+			return ctrl.Result{}, nil
 		}
-		m.Status.NodeRef = nref
-		logger.Info("Updated Machine Status", "Status", m.Status)
-		r.Client.Status().Update(ctx, m)
-		return ctrl.Result{Requeue: true, RequeueAfter: requeueAfter}, nil
 	}
-
 	return ctrl.Result{}, nil
 }
 
