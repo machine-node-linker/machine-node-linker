@@ -45,6 +45,6 @@ jobs:
           make podman-push
           make bundle
           make bundle-build
-          make bundle-push
-          make catalog-build
-          make catalog-push
+          make bundle-push 
+        #  make catalog-build
+        #  make catalog-push
