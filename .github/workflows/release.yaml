@@ -1,22 +1,28 @@
 
 name: Release
-
 on:
   push:
     branches:
       - main
     
 jobs:
-  Release:
+  release:
     name: Creates Tag and Release Artifacts and Upload to Quay
     runs-on: ubuntu-latest
+    outputs:
+      version: steps.version.outputs.version_tag
+      image: steps.build.outputs.controller
+      bundle: steps.build.outputs.bundle
+      operator: "machine-node-linker"
+      description: steps.setvars.outputs.description
+      icon: steps.setvars.outputs.icon
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           
       - name: Get Semantic Version
-        id: v
+        id: version
         uses: PaulHatch/semantic-version@v4.0.3
         with:
           short_tags: false
@@ -37,6 +43,7 @@ jobs:
           registry: quay.io
       
       - name: Build and Deploy
+        id: build
         env:
           VERSION: "${{ steps.v.outputs.version }}"
         run: |
@@ -46,5 +53,22 @@ jobs:
           make bundle
           make bundle-build
           make bundle-push 
-        #  make catalog-build
-        #  make catalog-push
+      - name: Set Variables
+        id: setvars
+        run: |
+          echo "::set-output description=${cat README.md}"
+          echo "::set-output image=${cat icon.png | base64}"
+    
+
+  catalog:
+    name: Update Catalog
+    needs: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Catalog
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Update Catalog
+          repo: machine-node-linker-catalog
+          token: ${{ secrets.CATALOG_TOKEN }}
+          inputs: ${{ toJSON(needs.Release.outputs)}}
