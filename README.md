@@ -1,4 +1,4 @@
-# machine-csr-noop
+# machine-node-linker
 
 A simple controller to manage machines and link them to nodes
 
@@ -25,7 +25,7 @@ Finally, This is an ALPHA project at this time and was developed in 24 hours to 
 
 ### Namespace
 
-The Controller is intended to run in the `machine-csr-noop` namespace. It has not been tested in any other namespace
+The Controller is intended to run in the `machine-node-linker` namespace. It has not been tested in any other namespace
 
 ### Node Tolerations
 

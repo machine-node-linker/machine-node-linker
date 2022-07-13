@@ -1,4 +1,4 @@
-module github.com/csfreak/machine-csr-noop
+module github.com/machine-node-linker/machine-node-linker
 
 go 1.18
 

@@ -1,8 +1,8 @@
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  namespace: machine-csr-noop
-  name: machine-csr-noop
+  namespace: machine-node-linker
+  name: machine-node-linker
 spec: {}
 ## The operator group MUST NOT have a namespace selector.  To function, this must have get, list, watch access to nodes, which are not
 #    namespace scoped.  It also must have get, list, watch, update on machine objects in the openshift-machine-api namespace.

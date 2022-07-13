@@ -1,11 +1,11 @@
-domain: github.com/csfreak
+domain: github.com/machine-node-linker
 layout:
 - go.kubebuilder.io/v3
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
-projectName: machine-csr-noop
-repo: github.com/csfreak/machine-csr-noop
+projectName: machine-node-linker
+repo: github.com/machine-node-linker/machine-node-linker
 resources:
 - controller: true
   domain: openshift.io

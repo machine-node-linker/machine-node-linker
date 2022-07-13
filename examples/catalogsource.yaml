@@ -1,11 +1,11 @@
 apiVersion: operators.coreos.com/v1alpha1  
 kind: CatalogSource
 metadata:
-  name: machine-csr-noop-catalog
-  namespace: machine-csr-noop
+  name: machine-node-linker-catalog
+  namespace: machine-node-linker
 spec:
   sourceType: grpc
-  image: quay.io/csfreak/machine-csr-noop-catalog:latest
+  image: quay.io/machine-node-linker/machine-node-linker-catalog:latest
   displayName: Machine Node NoOp
   publisher: Jason Ross
   updateStrategy:
