@@ -10,12 +10,12 @@ jobs:
     name: Creates Tag and Release Artifacts and Upload to Quay
     runs-on: ubuntu-latest
     outputs:
-      version: steps.version.outputs.version_tag
-      image: steps.build.outputs.controller
-      bundle: steps.build.outputs.bundle
+      version: ${{steps.version.outputs.version_tag}}
+      image: ${{steps.build.outputs.controller}}
+      bundle: ${{steps.build.outputs.bundle}}
       operator: "machine-node-linker"
-      description: steps.setvars.outputs.description
-      icon: steps.setvars.outputs.icon
+      description: ${{steps.setvars.outputs.description}}
+      icon: ${{steps.setvars.outputs.icon}}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -69,6 +69,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Update Catalog
-          repo: machine-node-linker-catalog
+          repo: machine-node-linker/catalog
+          ref: main
           token: ${{ secrets.CATALOG_TOKEN }}
           inputs: ${{ toJSON(needs.Release.outputs)}}

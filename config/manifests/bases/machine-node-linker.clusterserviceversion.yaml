@@ -17,7 +17,7 @@ spec:
     mediatype: image/png
   install:
     spec:
-      deployments: null
+      deployments: []
     strategy: ""
   installModes:
   - supported: false
