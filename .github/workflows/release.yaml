@@ -56,8 +56,8 @@ jobs:
       - name: Set Variables
         id: setvars
         run: |
-          echo "::set-output description=${cat README.md}"
-          echo "::set-output image=${cat icon.png | base64}"
+          echo "::set-output description=$(cat README.md)"
+          echo "::set-output image=$(cat icon.png | base64)"
     
 
   catalog:
