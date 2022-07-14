@@ -119,7 +119,8 @@ run: manifests generate fmt vet ## Run a controller from your host.
 .PHONY: podman-build
 podman-build: test ## Build podman image with the manager.
 	podman build -t ${IMG} .
-	echo "::set-output controller=$(BUNDLE_IMAGE)"
+	echo "::set-output controller=\"$(IMG)\""
+
 
 .PHONY: podman-push
 podman-push: ## Push podman image with the manager.
@@ -198,7 +199,7 @@ bundle: manifests kustomize operator-sdk ## Generate bundle manifests and metada
 .PHONY: bundle-build
 bundle-build: ## Build the bundle image.
 	podman build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
-	echo "::set-output bundle=$(BUNDLE_IMAGE)"
+	echo "::set-output bundle=\"$(BUNDLE_IMAGE)\""
 
 .PHONY: bundle-push
 bundle-push: ## Push the bundle image.
