@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-    
+env:
+  operator: machine-node-linker
+  channel: alpha
+
 jobs:
   release:
     name: Creates Tag and Release Artifacts and Upload to Quay
@@ -12,9 +15,9 @@ jobs:
     outputs:
       version: ${{steps.version.outputs.version_tag}}
       bundle: ${{steps.build.outputs.bundle}}
-      operator: machine-node-linker
+      operator: ${{env.operator}}
       package: ${{steps.package.outputs.package}}
-      channel: alpha
+      channel: ${{env.channel}}
 
     steps:
       - uses: actions/checkout@v3
@@ -58,8 +61,8 @@ jobs:
         id: package
         uses: machine-node-linker/opm-actions/make-package@v1
         with:
-          operator: ${{jobs.release.outputs.operator}}
-          channel: ${{jobs.release.outputs.channel}}
+          operator: ${{env.operator}}
+          channel: ${{env.channel}}
 
   catalog:
     name: Update Catalog
