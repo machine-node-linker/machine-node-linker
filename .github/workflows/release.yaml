@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{steps.version.outputs.version_tag}}
-      image: ${{steps.build.outputs.controller}}
       bundle: ${{steps.build.outputs.bundle}}
-      operator: "machine-node-linker"
-      description: ${{steps.setvars.outputs.description}}
-      icon: ${{steps.setvars.outputs.icon}}
+      operator: machine-node-linker
+      package: ${{steps.package.outputs.package}}
+      channel: alpha
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -53,12 +53,13 @@ jobs:
           make bundle
           make bundle-build
           make bundle-push 
-      - name: Set Variables
-        id: setvars
-        run: |
-          echo ::set-output name=description::$(cat README.md|base64)
-          echo ::set-output name=image::$(cat icon.png | base64)
-    
+
+      - name: Make Package
+        id: package
+        uses: machine-node-linker/opm-actions/make-package@v1
+        with:
+          operator: ${{jobs.release.outputs.operator}}
+          channel: ${{jobs.release.outputs.channel}}
 
   catalog:
     name: Update Catalog
