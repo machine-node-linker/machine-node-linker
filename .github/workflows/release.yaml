@@ -46,7 +46,7 @@ jobs:
           registry: quay.io
 
       - name: Setup Go
-        uses: action/setup-go@v3
+        uses: actions/setup-go@v3
         with:
           go-version-file: 'go.mod'
           cache: true
