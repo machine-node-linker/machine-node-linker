@@ -6,7 +6,7 @@ on:
       - main
 env:
   operator: machine-node-linker
-  channel: alpha
+  channel: candidate
 
 jobs:
   release:
@@ -68,7 +68,6 @@ jobs:
         uses: machine-node-linker/opm-actions/make-package@v1
         with:
           operator: ${{env.operator}}
-          channel: ${{env.channel}}
 
   catalog:
     name: Update Catalog
