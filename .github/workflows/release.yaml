@@ -1,4 +1,3 @@
-
 name: Release
 on:
   push:
@@ -37,7 +36,7 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           tag: "${{ steps.version.outputs.version_tag }}"
         continue-on-error: true
-        
+
       - name: Log in to Quay.io
         uses: redhat-actions/podman-login@v1
         with:
@@ -48,9 +47,9 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version-file: 'go.mod'
+          go-version-file: "go.mod"
           cache: true
-      
+
       - name: Build and Deploy
         id: build
         env:
@@ -61,7 +60,7 @@ jobs:
           make podman-push
           make bundle
           make bundle-build
-          make bundle-push 
+          make bundle-push
 
       - name: Make Package
         id: package
