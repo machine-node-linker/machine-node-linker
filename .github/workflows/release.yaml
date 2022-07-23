@@ -15,8 +15,9 @@ jobs:
       version: ${{steps.version.outputs.version_tag}}
       bundle: ${{steps.build.outputs.bundle}}
       operator: ${{env.operator}}
-      package: ${{steps.package.outputs.package}}
       channel: ${{env.channel}}
+      icon: ${{steps.files.outputs.icon}}
+      description: ${{steps.files.outputs.description}}
 
     steps:
       - uses: actions/checkout@v3
@@ -63,10 +64,10 @@ jobs:
           make bundle-push
 
       - name: Make Package
-        id: package
-        uses: machine-node-linker/opm-actions/make-package@v1
-        with:
-          operator: ${{env.operator}}
+        id: files
+        run: |
+          echo ::set-output name=icon::$(cat icon.png | base64)
+          echo ::set-output name=description::$(cat README.md | base64)
 
   catalog:
     name: Update Catalog
