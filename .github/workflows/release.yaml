@@ -16,8 +16,8 @@ jobs:
       bundle: ${{steps.build.outputs.bundle}}
       operator: ${{env.operator}}
       channel: ${{env.channel}}
-      icon: ${{steps.files.outputs.icon}}
-      description: ${{steps.files.outputs.description}}
+      icon: ${{steps.get_icon.outputs.output}}
+      description: ${{steps.get_description.outputs.output}}
 
     steps:
       - uses: actions/checkout@v3
@@ -63,11 +63,16 @@ jobs:
           make bundle-build
           make bundle-push
 
-      - name: Make Package
-        id: files
-        run: |
-          echo ::set-output name=icon::$(cat icon.png | base64)
-          echo ::set-output name=description::$(cat README.md | base64)
+      - name: Get ICON File
+        id: get_icon
+        uses: machine-node-linker/opm-actions/gh-output-file@v2
+        with:
+          file: icon.png
+      - name: Get Description File
+        id: get_description
+        uses: machine-node-linker/opm-actions/gh-output-file@v2
+        with:
+          file: README.md
 
   catalog:
     name: Update Catalog
