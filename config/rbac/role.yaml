@@ -5,51 +5,27 @@ metadata:
   creationTimestamp: null
   name: manager-role
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  verbs:
-  - delete
-  - get
-  - list
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - nodes/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - ""
-  resources:
-  - nodes/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - "machine.openshift.io"
-  resources:
-  - machines
-  verbs:
-  - get
-  - list 
-  - watch
-  - update
-  - patch
-- apiGroups:
-  - "machine.openshift.io"
-  resources:
-  - machines/status
-  verbs:
-  - get
-  - update
-  - patch
-- apiGroups:
-  - "machine.openshift.io"
-  resources:
-  - machines/finalizers
-  verbs:
-  - update
+  - apiGroups:
+      - "machine.openshift.io"
+    resources:
+      - machines
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+      - patch
+  - apiGroups:
+      - "machine.openshift.io"
+    resources:
+      - machines/status
+    verbs:
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - "machine.openshift.io"
+    resources:
+      - machines/finalizers
+    verbs:
+      - update

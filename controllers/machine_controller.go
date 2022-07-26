@@ -18,7 +18,9 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 	"time"
 
@@ -32,9 +34,15 @@ import (
 )
 
 const (
-	requeueAfter     = 30 * time.Second
-	machineNamespace = "openshift-machine-api"
+	requeueAfter          = 30 * time.Second
+	machineNamespace      = "openshift-machine-api"
+	AnnotationBase        = "machine-node-linker.github.com"
+	InternalIPAnnotation  = "internal-ip"
+	InternalDNSAnnotation = "internal-dns"
+	HostnameAnnotation    = "hostname"
 )
+
+var LegacyHostnameRegex = regexp.MustCompile("ip(-(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}")
 
 // MachineReconciler reconciles a Machine object
 type MachineReconciler struct {
@@ -60,17 +68,42 @@ func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, err
 	}
 
-	if len(m.Status.Addresses) == 0 && m.Spec.ProviderID == nil {
-		if a, err := r.AddStatusAddresses(m.GetName()); err != nil {
-			return ctrl.Result{}, nil
-		} else if !(reflect.DeepEqual(a, m.Status.Addresses)) {
+	modAddr, err := r.AddStatusAddressesFromAnnotations(m.Annotations)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	if len(modAddr) == 0 && LegacyHostnameRegex.Match([]byte(m.GetName())) && len(m.Status.Addresses) == 0 && m.Spec.ProviderID == nil {
+		modAddr, err = r.AddStatusAddressesFromHostname(m.GetName())
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	if len(modAddr) > 0 {
+		// Add addresses from machine.Status.Addresses that we dont create if they exist to prevent trashing
+		for _, eAddr := range m.Status.Addresses {
+			typeFound := false
+			for _, mAddr := range modAddr {
+				if eAddr.Type == mAddr.Type {
+					typeFound = true
+					break
+				}
+			}
+			if !typeFound {
+				modAddr = append(modAddr, *eAddr.DeepCopy())
+			}
+		}
+
+		if !(reflect.DeepEqual(modAddr, m.Status.Addresses)) {
 			logger.Info("Adding Addresses to Machine Status", "Status", "m.Status")
-			m.Status.Addresses = a
+			m.Status.Addresses = modAddr
 			logger.Info("New Status", "Status", m.Status)
 			r.Client.Status().Update(ctx, m)
 			return ctrl.Result{Requeue: true, RequeueAfter: requeueAfter}, nil
 		}
 	}
+
 	return ctrl.Result{}, nil
 }
 
@@ -81,7 +114,7 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *MachineReconciler) AddStatusAddresses(machineName string) ([]corev1.NodeAddress, error) {
+func (r *MachineReconciler) AddStatusAddressesFromHostname(machineName string) ([]corev1.NodeAddress, error) {
 	var a []corev1.NodeAddress
 	// Set Hostname Address Type
 	a = append(a,
@@ -111,4 +144,31 @@ func (r *MachineReconciler) AddStatusAddresses(machineName string) ([]corev1.Nod
 		},
 	)
 	return a, nil
+}
+
+func (r *MachineReconciler) AddStatusAddressesFromAnnotations(annotations map[string]string) ([]corev1.NodeAddress, error) {
+	var addr []corev1.NodeAddress
+
+	if value, ok := annotations[fmt.Sprintf("%s/%s", AnnotationBase, InternalIPAnnotation)]; ok {
+		addr = append(addr, corev1.NodeAddress{
+			Type:    corev1.NodeInternalIP,
+			Address: value,
+		})
+	}
+	if value, ok := annotations[fmt.Sprintf("%s/%s", AnnotationBase, HostnameAnnotation)]; ok {
+		addr = append(addr, corev1.NodeAddress{
+			Type:    corev1.NodeHostName,
+			Address: value,
+		}, corev1.NodeAddress{
+			Type:    corev1.NodeInternalDNS,
+			Address: value,
+		})
+	}
+	if value, ok := annotations[fmt.Sprintf("%s/%s", AnnotationBase, InternalDNSAnnotation)]; ok {
+		addr = append(addr, corev1.NodeAddress{
+			Type:    corev1.NodeInternalDNS,
+			Address: value,
+		})
+	}
+	return addr, nil
 }

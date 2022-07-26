@@ -1,18 +1,15 @@
 domain: github.com/machine-node-linker
 layout:
-- go.kubebuilder.io/v3
+  - go.kubebuilder.io/v3
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: machine-node-linker
 repo: github.com/machine-node-linker/machine-node-linker
 resources:
-- controller: true
-  domain: openshift.io
-  group: machine
-  kind: Machine
-  version: v1beta1
-- controller: true
-  kind: Node
-  version: v1
+  - controller: true
+    domain: openshift.io
+    group: machine
+    kind: Machine
+    version: v1beta1
 version: "3"
