@@ -4,10 +4,10 @@ metadata:
   name: machine-node-linker-subscription
   namespace: machine-node-linker
   labels:
-    operators.coreos.com/machine-node-linker.machine-csr.noop: ''
+    operators.coreos.com/machine-node-linker.machine-csr.noop: ""
 spec:
   installPlanApproval: Automatic
-  channel: alpha
+  channel: candidate-v0
   name: machine-node-linker
   source: machine-node-linker-catalog
   sourceNamespace: machine-node-linker

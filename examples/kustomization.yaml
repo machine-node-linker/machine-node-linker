@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: openshift-mnl-operator
+resources:
+  - ./ns.yaml
+  - ./operatorgroup.yaml
+  - ./catalogsource.yaml
+  - ./subscription.yaml
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /metadata/name
+        value: openshift-mnl-operator
+      - op: replace
+        path: /metadata/labels/kubernetes.io~1metadata.name
+        value: openshift-mnl-operator
+    target:
+      kind: Namespace
+  - patch: |-
+      - op: replace
+        path: /spec/sourceNamespace
+        value: openshift-mnl-operator
+    target:
+      kind: Subscription

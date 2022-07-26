@@ -1,20 +1,20 @@
-apiVersion: operators.coreos.com/v1alpha1  
+apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
   name: machine-node-linker-catalog
   namespace: machine-node-linker
 spec:
   sourceType: grpc
-  image: quay.io/machine-node-linker/machine-node-linker-catalog:latest
-  displayName: Machine Node NoOp
+  image: quay.io/machine-node-linker/catalog:latest
+  displayName: Machine Node Linker
   publisher: Jason Ross
   updateStrategy:
     registryPoll:
-      interval: 1m
+      interval: 24h
   grpcPodConfig:
     nodeSelector:
       kubernetes.io/os: linux
-      node-role.kubernetes.io/master: ''
+      node-role.kubernetes.io/master: ""
     priorityClassName: system-cluster-critical
     ## These tolerations partially duplicate the namespace annotation tolerations, but as its possible to be explicit here, its worth being explicit.
     tolerations:

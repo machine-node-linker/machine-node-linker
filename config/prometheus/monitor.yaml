@@ -1,11 +1,10 @@
-
 # Prometheus Monitor Service (Metrics)
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
     control-plane: machine-node-linker
-  name: machine-node-linker-metrics-monitor
+  name: metrics-monitor
   namespace: system
 spec:
   endpoints:
