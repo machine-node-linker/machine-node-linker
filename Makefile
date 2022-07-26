@@ -119,8 +119,6 @@ run: manifests generate fmt vet ## Run a controller from your host.
 .PHONY: podman-build
 podman-build: test ## Build podman image with the manager.
 	podman build -t ${IMG} .
-	echo ::set-output name=controller::$(IMG)
-
 
 .PHONY: podman-push
 podman-push: ## Push podman image with the manager.

@@ -24,19 +24,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Semantic Version
-        id: version
-        uses: PaulHatch/semantic-version@v4.0.3
-        with:
-          short_tags: false
-          bump_each_commit: true
+      - name: Fetch all tags
+        run: |
+          git fetch --force --tags
 
-      - name: Tag Release
-        uses: tvdias/github-tagger@v0.0.1
+      - name: Setup Go
+        uses: actions/setup-go@v3
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          tag: "${{ steps.version.outputs.version_tag }}"
-        continue-on-error: true
+          go-version-file: "go.mod"
+          cache: true
+
+      - name: Run Tests
+        run: make test
+
+      - name: Make Release
+        uses: go-semantic-release/action@v1
+        id: release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-initial-development-versions: true
 
       - name: Log in to Quay.io
         uses: redhat-actions/podman-login@v1
@@ -45,18 +51,12 @@ jobs:
           password: ${{ secrets.QUAY_PASSWORD }}
           registry: quay.io
 
-      - name: Setup Go
-        uses: actions/setup-go@v3
-        with:
-          go-version-file: "go.mod"
-          cache: true
-
       - name: Build and Deploy
         id: build
         env:
-          VERSION: "${{ steps.version.outputs.version }}"
+          VERSION: "${{ steps.release.outputs.version }}"
+          DEFAULT_CHANNEL: "${{env.channel}}_v${{steps.release.outputs.version_major}}"
         run: |
-          make generate
           make podman-build
           make podman-push
           make bundle
@@ -68,6 +68,7 @@ jobs:
         uses: machine-node-linker/opm-actions/gh-output-file@v2
         with:
           file: icon.png
+
       - name: Get Description File
         id: get_description
         uses: machine-node-linker/opm-actions/gh-output-file@v2

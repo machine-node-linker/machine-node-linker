@@ -24,11 +24,12 @@ Finally, This is an ALPHA project at this time and was developed in 24 hours to 
 The primary method of action for this controller is annotations on machine.machine.openshift.io/v1 objects.
 The values of the following annotations will be copied into NodeAddress objects in the status.addresses object of the machine
 
-| Annotation Key                              | NodeAddressType           | Value Expected               |
-| ------------------------------------------- | ------------------------- | ---------------------------- |
-| machine-node-linker.github.com/internal-ip  | InternalIP                | ip address (ex. 10.0.0.1 )   |
-| machine-node-linker.github.com/internal-dns | InternalDNS               | fqdn (ex. node.my.domain )   |
-| machine-node-linker.github.com/hostname     | Hostname<br \>InternalDNS | hostname (ex. nodehostname ) |
+| Annotation Key                              | NodeAddressType | Value Expected               |
+| ------------------------------------------- | --------------- | ---------------------------- |
+| machine-node-linker.github.com/internal-ip  | InternalIP      | ip address (ex. 10.0.0.1 )   |
+| machine-node-linker.github.com/internal-dns | InternalDNS     | fqdn (ex. node.my.domain )   |
+| machine-node-linker.github.com/hostname     | Hostname        | hostname (ex. nodehostname ) |
+| machine-node-linker.github.com/hostname     | InternalDNS     | hostname (ex. nodehostname ) |
 
 ### Namespace
 
@@ -55,14 +56,14 @@ If the following conditions are met, the operator will function.
 In this state, the following Address Objects will be made
 | Type | Address |
 | --- | --- |
-| InternalIP | <ip from machine name> |
-| Hostname | <machine name> |
-| InternalDNS | <machine name> |
-| InternalDNS | <machine name>.ec2.internal |
+| InternalIP | \<ip from machine name> |
+| Hostname | \<machine name> |
+| InternalDNS | \<machine name> |
+| InternalDNS | \<machine name>.ec2.internal |
 
 ### Examples
 
-The files in the [examples directory](examples/) will result in a complete instalations based on the above assumptions.
+The files in the [examples directory](examples/) will result in a complete installation
 
 ## Legal
 
