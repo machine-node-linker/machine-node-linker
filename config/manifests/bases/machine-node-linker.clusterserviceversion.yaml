@@ -43,3 +43,4 @@ spec:
   provider:
     name: Jason Ross
   replaces: machine-csr-noop.v0.3
+  version: 0.0.0
