@@ -12,12 +12,12 @@ jobs:
     name: Creates Tag and Release Artifacts and Upload to Quay
     runs-on: ubuntu-latest
     outputs:
-      version: ${{steps.version.outputs.version_tag}}
+      version: "v${{steps.release.outputs.version}}"
       bundle: ${{steps.build.outputs.bundle}}
       operator: ${{env.operator}}
       channel: ${{env.channel}}
-      icon: ${{steps.get_icon.outputs.output}}
-      description: ${{steps.get_description.outputs.output}}
+      icon: ${{steps.geticon.outputs.output}}
+      description: ${{steps.getdescription.outputs.output}}
 
     steps:
       - uses: actions/checkout@v3
@@ -65,13 +65,13 @@ jobs:
           make bundle-push
 
       - name: Get ICON File
-        id: get_icon
+        id: geticon
         uses: machine-node-linker/opm-actions/gh-output-file@v2
         with:
           file: icon.png
 
       - name: Get Description File
-        id: get_description
+        id: getdescription
         uses: machine-node-linker/opm-actions/gh-output-file@v2
         with:
           file: README.md
