@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "examples/*"
+      - "README.md"
 env:
   operator: machine-node-linker
   channel: candidate
