@@ -44,7 +44,6 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(machinev1.AddToScheme(scheme))
-
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -96,7 +95,19 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "Machine")
 		os.Exit(1)
 	}
+	if err = (&controllers.NodeReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Node")
+		os.Exit(1)
+	}
 	//+kubebuilder:scaffold:builder
+
+	// if err = nodelink.Add(mgr, nil); err != nil {
+	// 	setupLog.Error(err, "unable to create controller", "controller", "NodeLink")
+	// 	os.Exit(1)
+	// }
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
 		setupLog.Error(err, "unable to set up health check")
