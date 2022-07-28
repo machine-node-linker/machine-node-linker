@@ -2,23 +2,22 @@ name: Tests
 
 on:
   pull_request:
-    branches: [ "main" ]
-
+    branches: ["main"]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup Go
-      uses: action/setup-go@v3
-      with:
-        go-version-file: 'go.mod'
-        cache: true
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: "go.mod"
+          cache: true
 
-    - name: Test Build
-      run: |
-        make podman-build
-        make bundle
-        make bundle-build
+      - name: Test Build
+        run: |
+          make podman-build
+          make bundle
+          make bundle-build
