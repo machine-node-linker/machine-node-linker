@@ -449,14 +449,14 @@ var _ = Describe("Machine controller", func() {
 
 				By("Changing it to Running When the nodeRef is created")
 				Expect(k8sClient.Create(ctx, rawNode)).Should(Succeed())
-				Eventually(func() error {
-					k8sClient.Get(ctx, machineLookupKey, createdMachine)
-					createdMachine.Status.NodeRef = &corev1.ObjectReference{
-						Kind: "Node",
-						Name: "test-node",
-					}
-					return k8sClient.Status().Update(ctx, createdMachine)
-				}).Should(Succeed())
+				// Eventually(func() error {
+				// 	k8sClient.Get(ctx, machineLookupKey, createdMachine)
+				// 	createdMachine.Status.NodeRef = &corev1.ObjectReference{
+				// 		Kind: "Node",
+				// 		Name: "test-node",
+				// 	}
+				// 	return k8sClient.Status().Update(ctx, createdMachine)
+				// }).Should(Succeed())
 
 				Eventually(func() *string {
 					k8sClient.Get(ctx, machineLookupKey, createdMachine)
@@ -467,7 +467,7 @@ var _ = Describe("Machine controller", func() {
 				Eventually(func() *string {
 					k8sClient.Get(ctx, machineLookupKey, createdMachine)
 					return createdMachine.Status.Phase
-				}, timeout, interval).Should(HaveValue(Equal(phaseFailed)))
+				}, timeout*3, interval).Should(HaveValue(Equal(phaseFailed)))
 			})
 
 		})
