@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: check pr
         id: check
-        run: echo ::set-output name=url::$(gh pr list --app dependabot --json url,number --jq 'sort_by(.number) | first | .url')
+        run: echo ::set-output name=url::$(gh pr list --base dev --repo ${{github.repository}} --app dependabot --json url,number --jq 'sort_by(.number) | first | .url')
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
