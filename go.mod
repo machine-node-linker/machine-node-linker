@@ -7,9 +7,9 @@ require (
 	github.com/onsi/gomega v1.18.1
 	github.com/openshift/api v0.0.0-20220119132100-58db72a40994
 	github.com/openshift/machine-api-operator v0.2.1-0.20220530022644-d12b8a8f84ab
-	k8s.io/api v0.24.2
-	k8s.io/apimachinery v0.24.2
-	k8s.io/client-go v0.24.2
+	k8s.io/api v0.24.3
+	k8s.io/apimachinery v0.24.3
+	k8s.io/client-go v0.24.3
 	k8s.io/klog/v2 v2.60.1
 	k8s.io/kubectl v0.24.2
 	sigs.k8s.io/controller-runtime v0.12.3
