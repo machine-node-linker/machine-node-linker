@@ -27,8 +27,11 @@ var _ = Describe("Machine controller", func() {
 
 		timeout  = time.Second * 10
 		duration = time.Second * 10
-		interval = time.Millisecond * 250
 	)
+	AfterEach(func() {
+		//Sleep ensures cache sync
+		time.Sleep(interval * 2)
+	})
 	Context("Updating Machine Status Addresses", func() {
 		When("Machine Contains Proper Annotations", func() {
 			var (
