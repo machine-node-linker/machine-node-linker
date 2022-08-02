@@ -22,3 +22,4 @@ jobs:
         env:
           PR_URL: ${{steps.check.outputs.url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        continue-on-error: true
