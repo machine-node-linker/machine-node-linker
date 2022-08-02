@@ -38,7 +38,7 @@ jobs:
   dependabot-merge:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
-    needs: test
+    needs: merge-test
     steps:
       - name: Dependabot metadata
         id: metadata
