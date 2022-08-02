@@ -10,3 +10,7 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "dev"
+    commit-message:
+      prefix: "build(dep): "
+    allow:
+      - dependency-type: direct

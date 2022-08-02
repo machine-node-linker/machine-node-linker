@@ -1,0 +1,24 @@
+name: Dependabot Auto
+
+on:
+  push:
+    branches: ["dev"]
+permissions:
+  issues: write
+  pull-requests: write
+concurrency: ci-${{github.base_ref}}-${{github.actor}}-check
+jobs:
+  dependabot-auto:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check pr
+        id: check
+        run: echo ::set-output name=url::$(gh pr list --base dev --repo ${{github.repository}} --app dependabot --json url,number --jq 'sort_by(.number) | first | .url')
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Rebase PR
+        run: gh pr comment --body "@dependabot rebase" "$PR_URL"
+        env:
+          PR_URL: ${{steps.check.outputs.url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

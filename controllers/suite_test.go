@@ -21,6 +21,7 @@ import (
 	"go/build"
 	"path/filepath"
 	"testing"
+	"time"
 
 	ctrl "sigs.k8s.io/controller-runtime"
 
@@ -29,6 +30,7 @@ import (
 	machinev1 "github.com/openshift/api/machine/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/klog/v2"
 
 	"k8s.io/client-go/rest"
 	"k8s.io/kubectl/pkg/scheme"
@@ -42,6 +44,9 @@ import (
 
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
 // http://onsi.github.io/ginkgo/ to learn more about Ginkgo.
+const (
+	interval = time.Millisecond * 250
+)
 
 var (
 	cfg       *rest.Config
@@ -49,6 +54,7 @@ var (
 	testEnv   *envtest.Environment
 	ctx       context.Context
 	cancel    context.CancelFunc
+	syncTime  = interval
 )
 
 func TestMachineController(t *testing.T) {
@@ -60,7 +66,10 @@ func TestMachineController(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
+	//Set output for our modules
 	logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
+	//Set output for upstream included modules that use klog
+	klog.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
 
 	ctx, cancel = context.WithCancel(context.TODO())
 
@@ -88,7 +97,8 @@ var _ = BeforeSuite(func() {
 	Expect(k8sClient).NotTo(BeNil())
 
 	k8sManager, err := ctrl.NewManager(cfg, ctrl.Options{
-		Scheme: scheme.Scheme,
+		Scheme:     scheme.Scheme,
+		SyncPeriod: &syncTime,
 	})
 	Expect(err).ToNot(HaveOccurred())
 
