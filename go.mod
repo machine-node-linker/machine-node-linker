@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/onsi/ginkgo v1.16.5
-	github.com/onsi/gomega v1.20.0
+	github.com/onsi/gomega v1.20.1
 	github.com/openshift/api v0.0.0-20220119132100-58db72a40994
 	github.com/openshift/machine-api-operator v0.2.1-0.20220530022644-d12b8a8f84ab
 	k8s.io/api v0.24.3
