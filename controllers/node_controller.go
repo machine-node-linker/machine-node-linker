@@ -29,9 +29,9 @@ type NodeReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=,resources=nodes,verbs=get;list;watch;patch;update
-//+kubebuilder:rbac:groups=,resources=nodes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=,resources=nodes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=,resources=nodes,verbs=get;list;watch;patch;update
+// +kubebuilder:rbac:groups=,resources=nodes/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=,resources=nodes/finalizers,verbs=update
 // SetupWithManager sets up the controller with the Manager.
 func (r *NodeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return nodelink.Add(mgr, ctrl.Options{})

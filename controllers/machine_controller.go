@@ -70,8 +70,8 @@ var (
 	myProviderName      = AnnotationBase
 )
 
-//Object for serializing providerstatus object in machine status
-//API defines it as a RawExtension
+// Object for serializing providerstatus object in machine status
+// API defines it as a RawExtension
 type providerStatus struct {
 	InstanceState *string `json:"instanceState,omitempty"`
 	ProvidedBy    *string `json:"providedBy,omitempty"`
@@ -83,9 +83,9 @@ type MachineReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=machine.openshift.io,resources=machines,verbs=get;list;watch;update;patch
-//+kubebuilder:rbac:groups=machine.openshift.io,resources=machines/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=machine.openshift.io,resources=machines/finalizers,verbs=update
+// +kubebuilder:rbac:groups=machine.openshift.io,resources=machines,verbs=get;list;watch;update;patch
+// +kubebuilder:rbac:groups=machine.openshift.io,resources=machines/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=machine.openshift.io,resources=machines/finalizers,verbs=update
 func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 	logger.Info("Started Machine Reconciler")
@@ -183,7 +183,7 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-//Create a slice of NodeAddress objects based on a hostname matching ip-x-x-x-x
+// Create a slice of NodeAddress objects based on a hostname matching ip-x-x-x-x
 func (r *MachineReconciler) AddStatusAddressesFromHostname(machineName string) ([]corev1.NodeAddress, error) {
 	var a []corev1.NodeAddress
 	// Set Hostname Address Type
@@ -216,7 +216,7 @@ func (r *MachineReconciler) AddStatusAddressesFromHostname(machineName string) (
 	return a, nil
 }
 
-//Create a slice of NodeAddress objects based on annotations using machine-node-linker.github.com/ prefix
+// Create a slice of NodeAddress objects based on annotations using machine-node-linker.github.com/ prefix
 func (r *MachineReconciler) AddStatusAddressesFromAnnotations(annotations map[string]string) ([]corev1.NodeAddress, error) {
 	var addr []corev1.NodeAddress
 
@@ -244,8 +244,8 @@ func (r *MachineReconciler) AddStatusAddressesFromAnnotations(annotations map[st
 	return addr, nil
 }
 
-//determine the new phase based on node status and current phase
-//this function should only be called if we are responsible for setting phase
+// determine the new phase based on node status and current phase
+// this function should only be called if we are responsible for setting phase
 func (r *MachineReconciler) setPhase(m *machinev1.Machine, ctx context.Context) (string, error) {
 	var currentPhase *string = m.Status.Phase
 	if currentPhase == nil {
