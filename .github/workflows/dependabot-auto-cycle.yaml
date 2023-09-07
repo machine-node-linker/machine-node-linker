@@ -6,6 +6,7 @@ on:
 permissions:
   issues: write
   pull-requests: write
+  contents: write
 concurrency: ci-${{github.base_ref}}-${{github.actor}}-check
 jobs:
   dependabot-auto:
