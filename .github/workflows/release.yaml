@@ -81,7 +81,7 @@ jobs:
 
   catalog:
     name: Update Catalog
-    needs: Release
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Update Catalog
