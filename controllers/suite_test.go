@@ -62,9 +62,9 @@ func TestMachineController(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
-	//Set output for our modules
+	// Set output for our modules
 	logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
-	//Set output for upstream included modules that use klog
+	// Set output for upstream included modules that use klog
 	klog.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
 
 	ctx, cancel = context.WithCancel(context.TODO())
@@ -72,8 +72,8 @@ var _ = BeforeSuite(func() {
 	By("bootstrapping test environment")
 	testEnv = &envtest.Environment{
 		CRDDirectoryPaths: []string{
-			filepath.Join("..", "config", "crd", "bases"),
-			filepath.Join(build.Default.GOPATH, "pkg", "mod", "github.com", "openshift", "api@v0.2.1-0.20220922080915-f7f326323f37", "machine", "v1beta1")},
+			filepath.Join(build.Default.GOPATH, "pkg", "mod", "github.com", "openshift", "api@v0.0.0-20220921125526-1866ef90edbf", "machine", "v1beta1"),
+		},
 		ErrorIfCRDPathMissing: false,
 	}
 
@@ -124,7 +124,6 @@ var _ = BeforeSuite(func() {
 			Name: "openshift-machine-api",
 		},
 	})).Should(Succeed())
-
 })
 
 var _ = AfterSuite(func() {
