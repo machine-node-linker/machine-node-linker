@@ -73,7 +73,7 @@ var _ = BeforeSuite(func() {
 	testEnv = &envtest.Environment{
 		CRDDirectoryPaths: []string{
 			filepath.Join("..", "config", "crd", "bases"),
-			filepath.Join(build.Default.GOPATH, "pkg", "mod", "github.com", "openshift", "api@v0.0.0-20220119132100-58db72a40994", "machine", "v1beta1")},
+			filepath.Join(build.Default.GOPATH, "pkg", "mod", "github.com", "openshift", "api@v0.2.1-0.20220922080915-f7f326323f37", "machine", "v1beta1")},
 		ErrorIfCRDPathMissing: false,
 	}
 
