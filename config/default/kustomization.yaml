@@ -3,6 +3,10 @@ namePrefix: machine-node-linker-
 resources:
   - ../rbac
   - ../manager
+  # Comment the following line if not using replicas
+  - ../manager_pod_disruption_budget.yaml
 
 patches:
   - path: manager_auth_proxy_patch.yaml
+  # Comment the following line to disable replicas
+  - path: manager_replica_patch.yaml
