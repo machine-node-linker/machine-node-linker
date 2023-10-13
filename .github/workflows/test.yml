@@ -18,6 +18,7 @@ jobs:
 
       - name: Test Build
         run: |
+          make lint
           make podman-build
           make bundle
           make bundle-build
