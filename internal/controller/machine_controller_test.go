@@ -1,4 +1,4 @@
-package controllers
+package controller
 
 import (
 	"context"
@@ -15,7 +15,8 @@ import (
 )
 
 // +kubebuilder:docs-gen:collapse=Imports
-
+//
+//nolint:all
 var _ = Describe("Machine controller", func() {
 
 	const (

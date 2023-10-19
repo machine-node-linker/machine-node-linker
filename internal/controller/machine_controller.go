@@ -1,20 +1,29 @@
 /*
-Copyright 2022.
+MIT License
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Copyright (c) [2022] [Jason Ross]
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 */
 
-package controllers
+package controller
 
 import (
 	"context"
@@ -47,7 +56,7 @@ const (
 	PhaseAnnotation         = "manage-phase"
 
 	// This operator supports a subset of phase settings.
-	// When a noderef exists and points to a non-existant node
+	// When a noderef exists and points to a non-existent node
 	// When we have a previous state of Running and no noderef
 	phaseFailed = "Failed"
 
@@ -102,13 +111,13 @@ func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 	modAddr, err := r.AddStatusAddressesFromAnnotations(m.Annotations)
 	if err != nil {
-		return ctrl.Result{}, fmt.Errorf("unable to parse adress annotations: %v", err)
+		return ctrl.Result{}, fmt.Errorf("unable to parse address annotations: %w", err)
 	}
 
 	if len(modAddr) == 0 && LegacyHostnameRegex.Match([]byte(m.GetName())) && len(m.Status.Addresses) == 0 && m.Spec.ProviderID == nil {
 		modAddr, err = r.AddStatusAddressesFromHostname(m.GetName())
 		if err != nil {
-			return ctrl.Result{}, fmt.Errorf("unable to process addresses from hostname: %v", err)
+			return ctrl.Result{}, fmt.Errorf("unable to process addresses from hostname: %w", err)
 		}
 	}
 
@@ -131,7 +140,9 @@ func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 			logger.Info("Adding Addresses to Machine Status", "Status", "m.Status")
 			m.Status.Addresses = modAddr
 			logger.Info("New Status", "Status", m.Status)
-			r.Client.Status().Update(ctx, m)
+			if err = r.Client.Status().Update(ctx, m); err != nil {
+				return ctrl.Result{}, fmt.Errorf("unable to update client: %w", err)
+			}
 			return ctrl.Result{Requeue: true, RequeueAfter: requeueAfter}, nil
 		}
 	}
@@ -139,12 +150,14 @@ func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	if _, ok := m.Annotations[getAnnotationKey(PhaseAnnotation)]; ok {
 		phase, err := r.setPhase(m, ctx)
 		if err != nil {
-			return ctrl.Result{}, fmt.Errorf("unable to parse phase status: %v", err)
+			return ctrl.Result{}, fmt.Errorf("unable to parse phase status: %w", err)
 		}
 		if !reflect.DeepEqual(m.Status.Phase, &phase) {
 			m.Status.Phase = &phase
 			logger.Info("New Phase", "Status", m.Status)
-			r.Client.Status().Update(ctx, m)
+			if err = r.Client.Status().Update(ctx, m); err != nil {
+				return ctrl.Result{}, fmt.Errorf("unable to update client: %w", err)
+			}
 			return ctrl.Result{Requeue: true, RequeueAfter: requeueAfter}, nil
 		}
 	}
@@ -153,7 +166,7 @@ func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		var ps *providerStatus
 		var err error
 		if ps, err = providerStatusFromRawExtension(m.Status.ProviderStatus); err != nil {
-			return ctrl.Result{}, fmt.Errorf("unable to parse provider status: %v", err)
+			return ctrl.Result{}, fmt.Errorf("unable to parse provider status: %w", err)
 		}
 		if ps.ProvidedBy != nil && *ps.ProvidedBy != AnnotationBase {
 			return ctrl.Result{Requeue: false}, fmt.Errorf("refusing to change provider status: %v", ps)
@@ -165,10 +178,12 @@ func (r *MachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		if !(reflect.DeepEqual(ps, newPs)) {
 
 			if m.Status.ProviderStatus, err = newPs.toRawExtension(); err != nil {
-				return ctrl.Result{}, fmt.Errorf("unable to create RawExtension: %v", err)
+				return ctrl.Result{}, fmt.Errorf("unable to create RawExtension: %w", err)
 			}
 			logger.Info("New providerStatus", "Status", m.Status)
-			r.Client.Status().Update(ctx, m)
+			if err = r.Client.Status().Update(ctx, m); err != nil {
+				return ctrl.Result{}, fmt.Errorf("unable to update client: %w", err)
+			}
 			return ctrl.Result{Requeue: true, RequeueAfter: requeueAfter}, nil
 		}
 	}
