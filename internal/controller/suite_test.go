@@ -43,6 +43,7 @@ import (
 
 	"k8s.io/client-go/rest"
 	"k8s.io/kubectl/pkg/scheme"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -81,7 +82,7 @@ var _ = BeforeSuite(func() {
 	By("bootstrapping test environment")
 	testEnv = &envtest.Environment{
 		CRDDirectoryPaths: []string{
-			filepath.Join(build.Default.GOPATH, "pkg", "mod", "github.com", "openshift", "api@v0.0.0-20220921125526-1866ef90edbf", "machine", "v1beta1"),
+			filepath.Join(build.Default.GOPATH, "pkg", "mod", "github.com", "openshift", "api@v0.0.0-20240124164020-e2ce40831f2e", "machine", "v1beta1"),
 		},
 		ErrorIfCRDPathMissing: false,
 	}
@@ -102,8 +103,10 @@ var _ = BeforeSuite(func() {
 	Expect(k8sClient).NotTo(BeNil())
 
 	k8sManager, err := ctrl.NewManager(cfg, ctrl.Options{
-		Scheme:     scheme.Scheme,
-		SyncPeriod: &syncTime,
+		Scheme: scheme.Scheme,
+		Cache: cache.Options{
+			SyncPeriod: &syncTime,
+		},
 	})
 	Expect(err).ToNot(HaveOccurred())
 
